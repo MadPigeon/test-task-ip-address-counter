@@ -1,11 +1,11 @@
 package com.ipcounter.classes;
 
-final class IpToIntConverter {
+final class IpConverter {
 
   private static final int BYTE_SIZE = 256;
   private static final int IP_ADDRESS_LENGTH = 4;
 
-  public static final long turnIpAddressIntoInt(final String address) {
+  public static final long convertToLong(final String address) {
     final String[] ip_parts = address.split("[.]");
     if (ip_parts.length != IP_ADDRESS_LENGTH) {
       throw new IllegalArgumentException(address + " has " + ip_parts.length + " parts instead of 4.");

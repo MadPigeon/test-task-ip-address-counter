@@ -8,7 +8,7 @@ public class Counter {
 
   public static int countUniqueAddresses(Stream<String> stream) {
     int result = stream
-        .map(textIpAddress -> IpToIntConverter.turnIpAddressIntoInt(textIpAddress))
+        .map(textIpAddress -> IpConverter.convertToLong(textIpAddress))
         .collect(Collectors.groupingBy(Function.identity()))
         .size();
     return result;
