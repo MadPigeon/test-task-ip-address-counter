@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 
 public class FileProcessor {
 
-  public static int countUniqueIpsInFile(final String filePath) throws IOException {
-    int result = 0;
+  public static long countUniqueIpsInFile(final String filePath) throws IOException {
+    long result = 0;
     try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
       result = Counter.countUniqueAddresses(lines);
     } catch (IOException e) {

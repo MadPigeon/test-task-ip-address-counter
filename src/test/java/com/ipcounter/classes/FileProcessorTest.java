@@ -12,7 +12,7 @@ public class FileProcessorTest {
   @Test
   public void opensExistingFile() {
     try {
-      int actualResult = FileProcessor.countUniqueIpsInFile("dataset/test.txt");
+      long actualResult = FileProcessor.countUniqueIpsInFile("dataset/test.txt");
       assertEquals(3, actualResult);
     } catch (IOException e) {
       fail(e.getMessage());

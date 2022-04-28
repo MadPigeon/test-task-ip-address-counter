@@ -9,19 +9,19 @@ import org.junit.Test;
 public class CounterTest {
   @Test
   public void countsTwoElements() {
-    int actualResult = Counter.countUniqueAddresses(List.of("192.0.0.1", "255.255.255.255").stream());
+    long actualResult = Counter.countUniqueAddresses(List.of("192.0.0.1", "255.255.255.255").stream());
     assertEquals(2, actualResult);
   }
 
   @Test
   public void countsZeroElements() {
-    int actualResult = Counter.countUniqueAddresses(new ArrayList<String>().stream());
+    long actualResult = Counter.countUniqueAddresses(new ArrayList<String>().stream());
     assertEquals(0, actualResult);
   }
 
   @Test
   public void ignoresDuplicates() {
-    int actualResult = Counter.countUniqueAddresses(List.of("192.0.0.1", "192.0.0.1").stream());
+    long actualResult = Counter.countUniqueAddresses(List.of("192.0.0.1", "192.0.0.1").stream());
     assertEquals(1, actualResult);
   }
 }
