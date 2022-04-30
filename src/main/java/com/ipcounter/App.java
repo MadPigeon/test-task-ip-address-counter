@@ -14,7 +14,9 @@ public class App {
       System.out.println("Please provide a path to the file with the list of IPs:");
       String path = sc.nextLine();
       try {
+        System.out.println("Counting the lines in file");
         FileProcessor processor = new FileProcessor(path);
+        System.out.println("Starting the counting process, please wait.");
         processor.start();
         float percentage = 0;
         while (processor.isAlive()) {
