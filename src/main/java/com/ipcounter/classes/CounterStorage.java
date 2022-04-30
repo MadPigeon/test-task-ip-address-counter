@@ -1,6 +1,7 @@
 package com.ipcounter.classes;
 
 import java.util.BitSet;
+import java.util.stream.Stream;
 
 public final class CounterStorage {
 
@@ -12,7 +13,15 @@ public final class CounterStorage {
     afterAndIncludingZero = new BitSet(Integer.MAX_VALUE);
   }
 
-  public void storeIp(long ipAddress) {
+  public void storeIps(Stream<String> ipAddresses) {
+    ipAddresses.forEach(textIpAddress -> storeSingleIp(textIpAddress));
+  }
+
+  public void storeSingleIp(String ipAddress) {
+    storeIp(IpConverter.convertToLong(ipAddress));
+  }
+
+  private void storeIp(long ipAddress) {
     if (ipAddress > Integer.MAX_VALUE) {
       afterAndIncludingZero.set((int) (Integer.MIN_VALUE + ipAddress), true);
     } else {
