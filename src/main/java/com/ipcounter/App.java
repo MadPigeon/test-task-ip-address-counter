@@ -14,7 +14,20 @@ public class App {
       System.out.println("Please provide a path to the file with the list of IPs:");
       String path = sc.nextLine();
       try {
-        long uniqueAddressessCount = FileProcessor.countUniqueIpsInFile(path);
+        FileProcessor processor = new FileProcessor(path);
+        processor.start();
+        float percentage = 0;
+        while (processor.isAlive()) {
+          float newPercentage = processor.getPercentage();
+          if (newPercentage > percentage) {
+            percentage = newPercentage;
+            System.out.println(percentage);
+          }
+        }
+        if (processor.hasException()) {
+          throw processor.getException();
+        }
+        long uniqueAddressessCount = processor.getCalculatedResult();
         System.out.println(String.format(
             "There are %s unique addressess in the file.", uniqueAddressessCount));
         finishedCounting = true;
