@@ -14,9 +14,7 @@ public class FileProcessorTest {
     try {
       FileProcessor processor = new FileProcessor("dataset/test.txt");
       processor.run();
-      if (processor.hasException()) {
-        throw processor.getException();
-      }
+      processor.throwExceptionIfExists();
       long actualResult = processor.getCalculatedResult();
       assertEquals(3, actualResult);
     } catch (IOException e) {
@@ -30,9 +28,7 @@ public class FileProcessorTest {
     try {
       FileProcessor processor = new FileProcessor(path);
       processor.run();
-      if (processor.hasException()) {
-        throw processor.getException();
-      }
+      processor.throwExceptionIfExists();
       fail(String.format("Returns result without a file. Path(%s)", path));
     } catch (IOException e) {
     }

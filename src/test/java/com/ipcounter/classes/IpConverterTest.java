@@ -36,12 +36,17 @@ public class IpConverterTest {
     assertEquals(4294967295l, actualResult);
   }
 
-  @Test(expected=IllegalArgumentException.class)
-  public void refusesBadValues() {
+  @Test(expected = IllegalArgumentException.class)
+  public void refusesNegativeValues() {
     IpConverter.convertToLong("-1.0.0.0");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
+  public void refusesTooBigValues() {
+    IpConverter.convertToLong("1.0.0.257");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void refusesShortIps() {
     IpConverter.convertToLong("192.168.0");
   }

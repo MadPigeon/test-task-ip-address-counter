@@ -8,53 +8,81 @@ import java.util.stream.Stream;
 
 public class FileProcessor extends Thread {
 
-  private long result = 0;
-  private long lineLength = 0;
   private long currentLine = 0;
   private final Path path;
   private IOException exception = null;
+  CounterStorage storage;
 
-  public FileProcessor(final String filePath) {
+  /**
+   * Creates a thread that is ready to run on a given file
+   * 
+   * @param filePath relative or absolute path to the file
+   * @throws IOException if file does not exist
+   */
+  public FileProcessor(final String filePath) throws IOException {
     this.path = Paths.get(filePath);
-    try (Stream<String> lines = Files.lines(path)) {
-      this.lineLength = lines.count();
-    } catch (IOException e) {
-      this.exception = constructException(e);
+    if (!Files.exists(path)) {
+      throw new IOException(
+          String.format(
+              "File %s does not exist",
+              path.toAbsolutePath().toString()));
     }
+    storage = new CounterStorage();
   }
 
-  public float getPercentage() {
-    if (lineLength == 0) {
-      return 0;
+  /**
+   * Makes it easier to track progress in a big file.
+   * Initially wanted to make it a percentage, but counting
+   * lines in a large file took too long
+   * 
+   * @return number of the current line
+   */
+  public float getCurrentLine() {
+    return currentLine;
+  }
+
+  /**
+   * Added this method because couldn't add exception to the run() method
+   * Removing exception from the class afterward in case of re-runs
+   * 
+   * @throws IOException that occured during run()
+   */
+  public void throwExceptionIfExists() throws IOException {
+    if (exception == null) {
+      return;
     }
-    return Float.valueOf(currentLine / lineLength);
+    IOException exceptionWithAbsolutePath = addPathToException(exception);
+    throw exceptionWithAbsolutePath;
   }
 
-  public boolean hasException() {
-    return exception != null;
+  public long getCalculatedResult() {
+    return storage.getCount();
   }
 
-  public IOException getException() {
-    return exception;
-  }
-
-  public long getCalculatedResult(){
-    return result;
-  }
-
-  private IOException constructException(IOException baseException) {
+  /**
+   * Makes errors more descriptive, tests easier to perform
+   * 
+   * @param baseException the exception that had occured
+   * @return
+   */
+  private IOException addPathToException(IOException baseException) {
     return new IOException(path.toAbsolutePath().toString(), baseException);
   }
 
+  /**
+   * The overriden method that runs in a separate thread while communicating its
+   * process to the currentLine
+   */
   @Override
   public void run() {
-    try (Stream<String> lines = Files.lines(path)) {
-      CounterStorage storage = new CounterStorage();
-      storage.storeIps(lines);
-      result = storage.getCount();
+    try (Stream<String> ips = Files.lines(path)) {
+      ips.forEach(ip -> {
+        this.currentLine++;
+        this.storage.storeIp(ip);
+      });
+      // can't throw exceptions from an overriden run() method
     } catch (IOException e) {
-      this.exception = constructException(e);
+      this.exception = e;
     }
   }
-
 }
